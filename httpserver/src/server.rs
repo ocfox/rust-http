@@ -19,6 +19,12 @@ impl<'a> Server<'a> {
 
         for stream in connect_listener.incoming() {
             let mut stream = stream.unwarp();
+            println!("Connection established");
+
+            let mut read_buffer = [0;200];
+            stream.read(&mut read_buffer).unwrap();
+            let req: HttpRequest = String::from_utf8(read_buffer.to_vec()).unwrap().into();
+            Router::router(req, &mut stream);
         }
     }
 }
